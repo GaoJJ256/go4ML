@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"math"
 	"math/rand"
 	"os"
 	"time"
@@ -12,23 +13,29 @@ import (
 func main() {
 	fmt.Println("Hello World")
 
-	// 70%的数据作为训练集，30%的数据作为测试集
-	trainDataSet, testDataSet, features := loadDataSet("Data.csv", 70)
+}
 
-	// 打印训练数据集
-	fmt.Println("Train Data Set:")
-	printDataSet(trainDataSet)
+// 计算信息熵
+func culEnt(data [][]string) float64 {
+	num := len(data)
 
-	// 打印测试数据集
-	fmt.Println("Test Data Set:")
-	printDataSet(testDataSet)
+	labelMap := make(map[string]int)
 
-	// 打印特征
-	fmt.Println("Features:")
-	for _, feature := range features {
-		fmt.Printf("%s ", feature)
+	for _, temp := range data {
+		curLabel := temp[len(temp)-1] // 取得当前的标签
+		if _, ok := labelMap[curLabel]; !ok {
+			labelMap[curLabel] = 0
+		}
+		labelMap[curLabel] += 1
 	}
-	fmt.Println()
+
+	ent := float64(0)
+
+	for _, v := range labelMap {
+		prob := float64(v) / float64(num)
+		ent -= math.Log2(prob) * prob
+	}
+	return ent
 }
 
 func loadDataSet(filename string, trainPercentage int) ([][]string, [][]string, []string) {
