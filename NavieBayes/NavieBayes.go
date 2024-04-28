@@ -4,17 +4,16 @@ import (
 	"fmt"
 )
 
-
 func main() {
 	fmt.Println("Hello World")
 
 	// postingList, classVec := loadDataSet()
-    // fmt.Println("Posting List:")
+	// fmt.Println("Posting List:")
 	// for _, row := range postingList {
 	// 	fmt.Println(row)
 	// }
 
-    // fmt.Println("Class Vector:", classVec)
+	// fmt.Println("Class Vector:", classVec)
 
 	// fmt.Println("Data Vec:", createDataVec(postingList))
 
@@ -42,19 +41,18 @@ func createDataVec(data [][]string) []string {
 			if _, ok := st[word]; !ok {
 				dataVec = append(dataVec, word)
 				st[word] = true
-				
 			}
 		}
 	}
 	return dataVec
 }
 
-// 
+// 看一个[]string中是否含有某个string
 func contain(wordlist []string, word string) bool {
 	for _, temp := range wordlist {
 		if temp == word {
 			return true
-		}	
+		}
 	}
 	return false
 }
@@ -81,9 +79,9 @@ func trainNB0(trainMatrix [][]int, trainCategory []int) ([]float64, []float64, f
 	numTrainDocs := len(trainMatrix)
 	numWords := len(trainMatrix[0])
 	pAbusive := float64(sum(trainCategory)) / float64(numTrainDocs)
-	p0Num := make([]float64, numWords)  // 存放当 label 为 0 时，每个单词的个数
+	p0Num := make([]float64, numWords) // 存放当 label 为 0 时，每个单词的个数
 	p1Num := make([]float64, numWords)
-	p0Denom := 0.0  // 存放当 label 为 0 时，所有词的个数
+	p0Denom := 0.0 // 存放当 label 为 0 时，所有词的个数
 	p1Denom := 0.0
 
 	for i := 0; i < numTrainDocs; i++ {
@@ -119,18 +117,16 @@ func sum(slice []int) int {
 	return total
 }
 
-
 // 创建并加载数据集
-func loadDataSet() ([][]string, []int){
-    postingList := [][]string{
-        {"my", "dog", "has", "flea", "problems", "help", "please"},
-        {"maybe", "not", "take", "him", "to", "dog", "park", "stupid"},
-        {"my", "dalmation", "is", "so", "cute", "I", "love", "him"},
-        {"stop", "posting", "stupid", "worthless", "garbage"},
-        {"mr", "licks", "ate", "my", "steak", "how", "to", "stop", "him"},
-        {"quit", "buying", "worthless", "dog", "food", "stupid"},
-    }
-    classVec := []int{0, 1, 0, 1, 0, 1}
-    return postingList, classVec
+func loadDataSet() ([][]string, []int) {
+	postingList := [][]string{
+		{"my", "dog", "has", "flea", "problems", "help", "please"},
+		{"maybe", "not", "take", "him", "to", "dog", "park", "stupid"},
+		{"my", "dalmation", "is", "so", "cute", "I", "love", "him"},
+		{"stop", "posting", "stupid", "worthless", "garbage"},
+		{"mr", "licks", "ate", "my", "steak", "how", "to", "stop", "him"},
+		{"quit", "buying", "worthless", "dog", "food", "stupid"},
+	}
+	classVec := []int{0, 1, 0, 1, 0, 1}
+	return postingList, classVec
 }
-
