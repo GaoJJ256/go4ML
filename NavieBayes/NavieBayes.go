@@ -2,32 +2,33 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 func main() {
 	fmt.Println("Hello World")
 
-	// postingList, classVec := loadDataSet()
-	// fmt.Println("Posting List:")
-	// for _, row := range postingList {
-	// 	fmt.Println(row)
-	// }
+	postingList, classVec := loadDataSet()
+	fmt.Println("Posting List:")
+	for _, row := range postingList {
+		fmt.Println(row)
+	}
 
-	// fmt.Println("Class Vector:", classVec)
+	fmt.Println("Class Vector:", classVec)
 
-	// fmt.Println("Data Vec:", createDataVec(postingList))
+	fmt.Println("Data Vec:", createDataVec(postingList))
 
-	// t := setOfWords2Vec(postingList, createDataVec(postingList))
+	t := setOfWords2Vec(postingList, createDataVec(postingList))
 
-	// fmt.Println("dataVec:")
-	// for i, row := range t {
-	// 	fmt.Println(row, "[", classVec[i], "]")
-	// }
+	fmt.Println("dataVec:")
+	for i, row := range t {
+		fmt.Println(row, "[", classVec[i], "]")
+	}
 
-	// p0Vect, p1Vect, pAbusive := trainNB0(t, classVec)
-	// fmt.Println("p0Vect:", p0Vect)
-	// fmt.Println("p1Vect:", p1Vect)
-	// fmt.Println("pAbusive:", pAbusive)
+	p0Vect, p1Vect, pAbusive := trainNB0(t, classVec)
+	fmt.Println("p0Vect:", p0Vect)
+	fmt.Println("p1Vect:", p1Vect)
+	fmt.Println("pAbusive:", pAbusive)
 
 }
 
@@ -81,17 +82,23 @@ func trainNB0(trainMatrix [][]int, trainCategory []int) ([]float64, []float64, f
 	pAbusive := float64(sum(trainCategory)) / float64(numTrainDocs)
 	p0Num := make([]float64, numWords) // 存放当 label 为 0 时，每个单词的个数
 	p1Num := make([]float64, numWords)
-	p0Denom := 0.0 // 存放当 label 为 0 时，所有词的个数
-	p1Denom := 0.0
+	p0Denom := 2.0 // 存放当 label 为 0 时，所有词的个数
+	p1Denom := 2.0
 
 	for i := 0; i < numTrainDocs; i++ {
 		if trainCategory[i] == 1 {
 			for j := 0; j < numWords; j++ {
+				if p1Num[j] == 0 {
+					p1Num[j] = 1
+				}
 				p1Num[j] += float64(trainMatrix[i][j])
 				p1Denom += float64(trainMatrix[i][j])
 			}
 		} else {
 			for j := 0; j < numWords; j++ {
+				if p0Num[j] == 0 {
+					p0Num[j] = 1
+				}
 				p0Num[j] += float64(trainMatrix[i][j])
 				p0Denom += float64(trainMatrix[i][j])
 			}
@@ -102,8 +109,8 @@ func trainNB0(trainMatrix [][]int, trainCategory []int) ([]float64, []float64, f
 	p0Vect := make([]float64, numWords)
 
 	for i := 0; i < numWords; i++ {
-		p1Vect[i] = p1Num[i] / p1Denom
-		p0Vect[i] = p0Num[i] / p0Denom
+		p1Vect[i] = math.Log(p1Num[i] / p1Denom)
+		p0Vect[i] = math.Log(p0Num[i] / p0Denom)
 	}
 
 	return p0Vect, p1Vect, pAbusive
